@@ -41,17 +41,17 @@ flowchart TD
 ## Decisões de arquitetura
 
 **Endpoint único para múltiplos clientes (modelo Service Provider)**
-Em vez de provisionar uma stack isolada por cliente, optou-se por um único gateway/endpoint HTTPS compartilhado, reduzindo custo operacional e tempo de onboarding de novos clientes — a inclusão de um novo cliente passa a exigir apenas configuração dos agentes, sem necessidade de nova infraestrutura.
+Em vez de provisionar uma stack isolada por cliente, optou-se por um único gateway/endpoint HTTPS compartilhado, reduzindo custo operacional e tempo de onboarding de novos clientes. A inclusão de um novo cliente passa a exigir apenas configuração dos agentes, sem necessidade de nova infraestrutura.
 
 **Separação entre coleta e processamento**
-A camada de coleta (recebimento dos dados dos agentes) foi mantida separada da camada de processamento/relatórios (License Manager), permitindo escalar cada componente de forma independente conforme o volume de clientes cresce.
+A camada de coleta de recebimento dos dados dos agentes foi mantida separada da camada de processamento/relatórios (License Manager), permitindo escalar cada componente de forma independente conforme o volume de clientes cresce.
 
 **Comunicação segura por HTTPS**
 Toda comunicação entre os agentes dos clientes e a infraestrutura central trafega por HTTPS, com liberação de rede tratada como etapa formal de onboarding de cada cliente (registro de IPs de origem, liberação de firewall).
 
 ## Desafios enfrentados
 
-- **Coordenação de prazos entre times**: a criação da infraestrutura envolveu alinhamento entre múltiplas equipes (rede, segurança, aplicação), o que exigiu comunicação constante para evitar retrabalho e mal-entendidos sobre o que já estava ou não disponível.
+- **Coordenação de prazos entre times**: a criação da infraestrutura envolveu alinhamento entre múltiplas equipes (rede, segurança, aplicação e banco), o que exigiu comunicação constante para evitar retrabalho e mal-entendidos sobre o que já estava ou não disponível.
 - **Comunicação clara de status**: em projetos com múltiplos stakeholders, uma parte relevante do trabalho foi garantir que o status técnico real (o que estava pronto vs. em progresso) fosse comunicado de forma consistente, evitando expectativas desalinhadas.
 - **Desenho pensando em reuso**: a decisão de usar um endpoint único precisou equilibrar simplicidade operacional com a necessidade futura de isolar clientes caso o volume ou requisitos de segurança exigissem segregação maior.
 

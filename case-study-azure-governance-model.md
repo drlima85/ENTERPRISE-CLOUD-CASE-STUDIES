@@ -4,7 +4,7 @@
 
 ## Problema que resolve
 
-Ambientes Azure operados sob contrato corporativo (Enterprise Agreement) tendem a crescer organicamente — múltiplas assinaturas, múltiplos times provisionando recursos, sem um padrão comum de nomenclatura, tagueamento ou controle de acesso. Sem um modelo de governança formal, isso gera dificuldade de rastrear custos por área de negócio, inconsistência de segurança entre ambientes e falta de visibilidade para auditoria.
+Ambientes Azure operados sob contrato corporativo (Enterprise Agreement) tendem a crescer organicamente com múltiplas assinaturas, múltiplos times provisionando recursos, sem um padrão comum de nomenclatura, tagueamento ou controle de acesso. Sem um modelo de governança formal, isso gera dificuldade de rastrear custos por área de negócio, inconsistência de segurança entre ambientes e falta de visibilidade para auditoria.
 
 O objetivo foi propor um modelo de operação e governança formal, documentado e apresentável a múltiplos interessados (arquitetura, segurança, financeiro), definindo os requisitos necessários para padronizar como o ambiente Azure deveria ser administrado dali em diante.
 
@@ -14,8 +14,9 @@ O objetivo foi propor um modelo de operação e governança formal, documentado 
 flowchart TD
     MG[Management Groups]
     MG --> SUB1[Subscription - Produção]
-    MG --> SUB2[Subscription - Não-Produção]
-    MG --> SUB3[Subscription - Compartilhados]
+    MG --> SUB2[Subscription - HML]
+    MG --> SUB3[Subscription - DEV]
+    MG --> SUB4[Subscription - corporativa]
 
     subgraph Governanca["Camadas de Governança"]
         POL[Azure Policy<br/>Compliance automatizado]

@@ -28,6 +28,8 @@ flowchart TD
     SUB1 --> Governanca
     SUB2 --> Governanca
     SUB3 --> Governanca
+    SUB4 --> Governanca
+
 ```
 
 ## Pilares definidos no modelo

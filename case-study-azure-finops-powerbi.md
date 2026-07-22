@@ -4,7 +4,7 @@
 
 ## Problema que resolve
 
-Ambientes Azure com múltiplas assinaturas e Resource Groups tornam difícil responder perguntas financeiras básicas — "para onde foi o consumo do mês?", "qual área é responsável por qual custo?", "quais recomendações de economia estão disponíveis e ainda não foram aplicadas?". O portal nativo do Azure (Cost Management) oferece visão por assinatura, mas não consolida facilmente múltiplas assinaturas em um único painel executivo, nem cruza automaticamente com dados de recomendação do Azure Advisor.
+Ambientes Azure com múltiplas assinaturas e Resource Groups tornam difícil responder perguntas financeiras básicas, tais como: "para onde foi o consumo do mês?", "qual área é responsável por qual custo?", "quais recomendações de economia estão disponíveis e ainda não foram aplicadas?". O portal nativo do Azure (Cost Management) oferece visão por assinatura, mas não consolida facilmente múltiplas assinaturas em um único painel executivo, nem cruza automaticamente com dados de recomendação do Azure Advisor.
 
 O objetivo foi construir um dashboard central que desse essa visibilidade, tanto para o time técnico quanto para gestores que precisam entender consumo sem entrar no portal do Azure.
 
@@ -47,10 +47,10 @@ Em vez de depender da visão nativa do Azure (limitada por assinatura), os dados
 As recomendações de custo do Azure Advisor (ex: recursos subutilizados, candidatos a Rightsizing ou desligamento) foram incorporadas ao mesmo modelo de dados, permitindo visualizar não só quanto está sendo gasto, mas quanto **poderia estar sendo economizado** com ações já identificadas e ainda não aplicadas.
 
 **Alocação por Tag como eixo central de análise**
-As tags de recurso (Centro de Custo, Proprietário, Projeto, Ambiente) definidas na camada de governança foram usadas como principal dimensão de corte no Power BI — permitindo que cada área de negócio visualizasse apenas o custo relativo a ela (Chargeback/Showback), sem depender de acesso direto ao portal Azure.
+As tags de recurso (Centro de Custo, Proprietário, Projeto, Ambiente) definidas na camada de governança foram usadas como principal dimensão de corte no Power BI, permitindo que cada área de negócio visualizasse apenas o custo relativo a ela (Chargeback/Showback), sem depender de acesso direto ao portal Azure.
 
 **Painel pensado para audiência não técnica**
-Diferente do portal do Azure (voltado para quem administra o ambiente), o dashboard foi desenhado com visões executivas — tendência de consumo, comparação mês a mês, top recursos por custo — pensado para gestores que precisam decidir sobre orçamento sem interpretar terminologia técnica de nuvem.
+Diferente do portal do Azure (voltado para quem administra o ambiente), o dashboard foi desenhado com visões executivas e com tendência de consumo, comparação mês a mês e top recursos por custo, pensado para gestores que precisam decidir sobre orçamento sem interpretar terminologia técnica de nuvem.
 
 ## Desafios enfrentados
 

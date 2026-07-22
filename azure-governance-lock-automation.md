@@ -48,7 +48,7 @@ flowchart TD
         O -->|Sim| P{Falta CanNotDelete?}
         O -->|Não| Q{Falta CanNotDelete<br/>e/ou ReadOnly?}
         P -->|Sim| R[Aplica CanNotDelete]
-        Q -->|Sim| S[Aplica o(s) lock(s)<br/>que estiver(em) faltando]
+        Q -->|Sim| S[Aplica os locks<br/>que estiverem faltando]
     end
 
     R --> LA2["Logic App: Remediação"]

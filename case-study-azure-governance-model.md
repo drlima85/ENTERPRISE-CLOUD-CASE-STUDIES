@@ -69,7 +69,7 @@ Bloqueios do tipo "Somente Leitura" aplicados a nível de Resource Group de prod
 
 ## Aprendizados
 
-- Governança de nuvem eficaz não é só uma política técnica — depende de comunicação clara com áreas não técnicas para ser adotada de fato.
+- Governança de nuvem eficaz não é só uma política técnica, mas depende de comunicação clara com áreas não técnicas para ser adotada de fato.
 - Modelos de governança aplicados a ambientes já em operação exigem uma estratégia de adoção gradual, diferente de quando se parte do zero.
 
 ---

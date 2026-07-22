@@ -35,7 +35,7 @@ flowchart TD
 ## Pilares definidos no modelo
 
 **Estrutura de Management Groups e Subscriptions**
-Organização hierárquica separando ambientes por finalidade (produção, não-produção, recursos compartilhados), permitindo aplicar políticas e controles de forma consistente por nível, sem depender de configuração manual em cada assinatura.
+Organização hierárquica separando ambientes por finalidade (DEV, HML, produção, corporativo), permitindo aplicar políticas e controles de forma consistente por nível, sem depender de configuração manual em cada assinatura.
 
 **Padrão de Tagging para FinOps**
 Definição de tags obrigatórias (ex: centro de custo, ambiente, responsável, projeto) aplicadas a todo recurso provisionado, viabilizando alocação de custos (Cost Allocation), Chargeback/Showback e relatórios financeiros por área de negócio.
@@ -50,10 +50,10 @@ Políticas aplicadas nos Management Groups para impedir a criação de recursos 
 Definição de budgets, alertas de consumo e rotina de revisão de Rightsizing e Reservas de Instância, incorporando FinOps como prática contínua e não como uma revisão pontual.
 
 **Alertas proativos via Azure Advisor, Service Health e Resource Health**
-Toda assinatura provisionada passou a ter alertas configurados nas quatro categorias do Azure Advisor (Custo, Desempenho, Confiabilidade e Excelência Operacional), além de alertas de Service Health (interrupções na plataforma Azure) e Resource Health (degradação de recursos específicos) — transformando a operação de reativa (descobrir o problema quando o usuário reclama) para proativa.
+Toda assinatura provisionada passou a ter alertas configurados nas quatro categorias do Azure Advisor (Custo, Desempenho, Confiabilidade e Excelência Operacional), além de alertas de Service Health (interrupções na plataforma Azure) e Resource Health (degradação de recursos específicos), transformando a operação de reativa (descobrir o problema quando o usuário reclama) para proativa.
 
 **Resource Locks e Microsoft Defender for Cloud como camadas de proteção**
-Bloqueios do tipo "Somente Leitura" aplicados a nível de Resource Group de produção (nunca a nível de assinatura inteira, para não impactar serviços como backup) para prevenir exclusão acidental de recursos críticos. Em paralelo, o Microsoft Defender for Cloud foi habilitado nas assinaturas de produção, com notificações por severidade e integração ao Log Analytics para centralizar eventos de segurança.
+Bloqueios do tipo "Somente Leitura" aplicados a nível de Resource Group de produção (nunca a nível de assinatura inteira, para não impactar serviços como backup e\ou LogicApps) para prevenir exclusão acidental de recursos críticos. Em paralelo, o Microsoft Defender for Cloud foi habilitado nas assinaturas de produção, com notificações por severidade e integração ao Log Analytics para centralizar eventos de segurança.
 
 ## Desafios enfrentados
 
@@ -76,4 +76,4 @@ Bloqueios do tipo "Somente Leitura" aplicados a nível de Resource Group de prod
 **Autor:** Danilo Lima — Cloud Architect | Senior Cloud Specialist
 [LinkedIn](https://linkedin.com/in/danilo-lima-9ba0375a/)
 
-> Nota: este case study descreve um modelo de governança real proposto profissionalmente, com nome de empresa, contrato e dados de terceiros removidos por confidencialidade.
+> Nota: este case study descreve um modelo de governança real proposto e realizado profissionalmente, com nome de empresa, contrato e dados de terceiros removidos por confidencialidade.

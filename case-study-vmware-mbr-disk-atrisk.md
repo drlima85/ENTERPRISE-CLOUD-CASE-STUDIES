@@ -4,7 +4,7 @@
 
 ## Problema que resolve
 
-Discos virtuais formatados com partição **MBR (Master Boot Record)** têm um limite de endereçamento de **2TB**. Quando um disco MBR é expandido além desse limite — seja por engano ou por falta de atenção ao tipo de partição antes da expansão — a VM continua rodando, mas o VMware passa a reportar o disco/VM com o status **"At Risk"**, sinalizando um estado potencialmente inconsistente que pode comprometer operações futuras (como consolidação de snapshot) se não for corrigido.
+Discos virtuais formatados com partição **MBR (Master Boot Record)** têm um limite de endereçamento de **2TB**. Quando um disco MBR é expandido além desse limite, seja por engano ou por falta de atenção ao tipo de partição antes da expansão a VM continua rodando, mas o VMware passa a reportar o disco/VM com o status **"At Risk"**, sinalizando um estado potencialmente inconsistente que pode comprometer operações futuras (como consolidação de snapshot) se não for corrigido.
 
 O desafio era corrigir esse estado sem interromper o serviço rodando na VM e sem perda de dados armazenados no disco.
 
@@ -24,7 +24,7 @@ flowchart TD
 
 ## Causa raiz
 
-O disco havia sido expandido para um tamanho superior a 2TB sem observar que a partição em uso ainda era MBR — formato que não suporta endereçamento acima desse limite (diferente do GPT, que suporta discos maiores). Isso deixou o disco em um estado que o VMware identificou como inconsistente, refletido no alerta de risco na VM.
+O disco havia sido expandido para um tamanho superior a 2TB sem observar que a partição em uso ainda era MBR, formato que não suporta endereçamento acima desse limite (diferente do GPT, que suporta discos maiores). Isso deixou o disco em um estado que o VMware identificou como inconsistente, refletido no alerta de risco na VM.
 
 ## Correção aplicada
 
@@ -34,7 +34,7 @@ O procedimento de correção envolveu reverter o disco ao seu estado anterior co
 
 - **Correção sem downtime**: o disco precisava ser corrigido com o menor impacto possível na disponibilidade do serviço rodando na VM.
 - **Risco de perda de dados**: qualquer operação de redimensionamento de disco carrega risco inerente — o procedimento precisou ser validado cuidadosamente antes da execução, incluindo garantir backup/snapshot prévio como rede de segurança.
-- **Identificação da causa raiz não óbvia**: o sintoma reportado pela plataforma ("At Risk") não indica diretamente que a causa é uma limitação de tipo de partição — foi necessário investigar o histórico de expansão do disco para conectar o sintoma à causa real.
+- **Identificação da causa raiz não óbvia**: o sintoma reportado pela plataforma ("At Risk") não indica diretamente que a causa é uma limitação de tipo de partiçã, foi necessário investigar o histórico de expansão do disco para conectar o sintoma à causa real.
 
 ## Resultados
 
@@ -43,8 +43,8 @@ O procedimento de correção envolveu reverter o disco ao seu estado anterior co
 
 ## Aprendizados
 
-- Antes de expandir qualquer disco virtual, é essencial confirmar o tipo de partição (MBR vs. GPT) — a decisão de qual formato usar deveria ser tomada no provisionamento inicial do disco, prevendo se ele algum dia pode precisar ultrapassar 2TB.
-- Alertas genéricos de plataforma como "At Risk" exigem investigação de causa raiz indo além do sintoma reportado — a mensagem por si só não indica que o problema é uma limitação de partição.
+- Antes de expandir qualquer disco virtual, é essencial confirmar o tipo de partição (MBR vs. GPT), a decisão de qual formato usar deveria ser tomada no provisionamento inicial do disco, prevendo se ele algum dia pode precisar ultrapassar 2TB.
+- Alertas genéricos de plataforma como "At Risk" exigem investigação de causa raiz indo além do sintoma reportado a mensagem por si só não indica que o problema é uma limitação de partição.
 
 ---
 **Autor:** Danilo Lima — Cloud Architect | Senior Cloud Specialist

@@ -4,7 +4,7 @@
 
 ## Problema que resolve
 
-Domain Controllers rodando versões de sistema operacional próximas do fim do ciclo de suporte precisam ser migrados para versões mais recentes, mantendo a continuidade dos serviços de diretório (autenticação, DNS, DHCP) durante e após o processo. Esse tipo de migração é sensível porque um DC concentra múltiplos serviços críticos de infraestrutura — qualquer falha silenciosa após o upgrade pode não ser percebida imediatamente, mas comprometer autenticação ou resolução de nomes na rede.
+Domain Controllers rodando versões de sistema operacional próximas do fim do ciclo de suporte precisam ser migrados para versões mais recentes, mantendo a continuidade dos serviços de diretório (autenticação, DNS, DHCP) durante e após o processo. Esse tipo de migração é sensível porque um DC concentra múltiplos serviços críticos de infraestrutura, qualquer falha silenciosa após o upgrade pode não ser percebida imediatamente, mas comprometer autenticação ou resolução de nomes na rede.
 
 O trabalho foi conduzido em equipe, com responsabilidade compartilhada pela execução da migração e validação pós-upgrade de um Domain Controller de produção.
 
@@ -29,7 +29,7 @@ Após a migração do sistema operacional, um checklist foi seguido para confirm
 
 ## Troubleshooting: falha no serviço Windows Time
 
-Durante a validação, o servidor apresentou falha ao iniciar o serviço **Windows Time (w32time)** — serviço responsável por manter a sincronização de horário do Domain Controller, crítico porque o Kerberos (protocolo de autenticação do Active Directory) depende de relógios sincronizados entre servidores e estações para funcionar corretamente.
+Durante a validação, o servidor apresentou falha ao iniciar o serviço **Windows Time (w32time)** serviço responsável por manter a sincronização de horário do Domain Controller, crítico porque o Kerberos (protocolo de autenticação do Active Directory) depende de relógios sincronizados entre servidores e estações para funcionar corretamente.
 
 A correção envolveu parar e reconfigurar o serviço do zero:
 
@@ -43,7 +43,7 @@ w32tm /config /update /manualpeerlist:"time.windows.com",0x8 /syncfromflags:MANU
 w32tm /resync /update
 ```
 
-Esse procedimento remove o registro do serviço, registra novamente do zero, ajusta o tipo de inicialização do serviço e reconfigura a fonte de sincronização de horário manualmente — resolvendo casos em que o serviço fica com registro corrompido após um upgrade de sistema operacional.
+Esse procedimento remove o registro do serviço, registra novamente do zero, ajusta o tipo de inicialização do serviço e reconfigura a fonte de sincronização de horário manualmente, resolvendo casos em que o serviço fica com registro corrompido após um upgrade de sistema operacional.
 
 ## Desafios enfrentados
 

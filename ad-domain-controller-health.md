@@ -4,7 +4,7 @@
 
 ## Problema que resolve
 
-A descontinuação de Domain Controllers (DCs) redundantes num ambiente Active Directory é uma operação de risco — remover o DC errado, ou remover um DC sem antes confirmar a saúde da replicação e a localização dos papéis FSMO, pode causar inconsistência de diretório, falhas de autenticação e problemas de resolução de nomes (DNS) em toda a organização.
+A descontinuação de Domain Controllers (DCs) redundantes num ambiente Active Directory é uma operação de risco ou remover o DC errado, ou remover um DC sem antes confirmar a saúde da replicação e a localização dos papéis FSMO, pode causar inconsistência de diretório, falhas de autenticação e problemas de resolução de nomes (DNS) em toda a organização.
 
 O objetivo foi realizar um assessment técnico completo antes de qualquer ação de despromoção, documentando o estado real do ambiente para embasar a decisão e obter aprovação formal antes da execução.
 
@@ -32,7 +32,7 @@ flowchart TD
 ## O que foi verificado
 
 **Papéis FSMO (Flexible Single Master Operations)**
-Confirmação de qual Domain Controller concentrava os cinco papéis FSMO (Schema Master, Domain Naming Master, PDC Emulator, RID Master e Infrastructure Master) — informação crítica antes de qualquer despromoção, já que remover o DC errado sem transferir esses papéis primeiro pode interromper operações essenciais do domínio.
+Confirmação de qual Domain Controller concentrava os cinco papéis FSMO (Schema Master, Domain Naming Master, PDC Emulator, RID Master e Infrastructure Master), informação crítica antes de qualquer despromoção, já que remover o DC errado sem transferir esses papéis primeiro pode interromper operações essenciais do domínio.
 
 **Redundância de Domain Controllers**
 Levantamento da quantidade de DCs ativos no ambiente antes da despromoção, garantindo que a quantidade remanescente continuasse suficiente para alta disponibilidade de autenticação e resolução de nomes.
@@ -44,7 +44,7 @@ Teste de replicação entre os DCs para confirmar que todas as partições do di
 Validação de que as zonas DNS associadas ao domínio respondiam corretamente e estavam saudáveis, já que Domain Controllers frequentemente hospedam também o serviço de DNS integrado ao Active Directory.
 
 **Gestão de credenciais elevadas**
-A atividade exigia permissão de Domain Admin, superior ao acesso padrão de operação — a credencial elevada foi solicitada e concedida de forma temporária pelo cliente especificamente para a execução da atividade, seguindo princípio de acesso mínimo necessário.
+A atividade exigia permissão de Domain Admin, superior ao acesso padrão de operação a credencial elevada foi solicitada e concedida de forma temporária pelo cliente especificamente para a execução da atividade, seguindo princípio de acesso mínimo necessário.
 
 ## Desafios enfrentados
 
@@ -60,8 +60,8 @@ A atividade exigia permissão de Domain Admin, superior ao acesso padrão de ope
 
 ## Aprendizados
 
-- Nem todo erro reportado por uma ferramenta de diagnóstico indica falha real — distinguir entre "erro de permissão" e "erro de infraestrutura" evita decisões equivocadas sobre a saúde real do ambiente.
-- Operações de risco em Active Directory (como despromoção de DCs) se beneficiam de um assessment estruturado e documentado como pré-requisito, não apenas da experiência do executor — isso também facilita a aprovação formal por quem não domina os detalhes técnicos.
+- Nem todo erro reportado por uma ferramenta de diagnóstico indica falha real, distinguir entre "erro de permissão" e "erro de infraestrutura" evita decisões equivocadas sobre a saúde real do ambiente.
+- Operações de risco em Active Directory (como despromoção de DCs) se beneficiam de um assessment estruturado e documentado como pré-requisito, não apenas da experiência do executor, isso também facilita a aprovação formal por quem não domina os detalhes técnicos.
 
 ---
 **Autor:** Danilo Lima — Cloud Architect | Senior Cloud Specialist

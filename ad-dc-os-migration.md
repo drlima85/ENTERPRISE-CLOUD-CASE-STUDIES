@@ -59,7 +59,7 @@ Esse procedimento remove o registro do serviço, registra novamente do zero, aju
 
 ## Aprendizados
 
-- Migrações de sistema operacional em Domain Controllers exigem validação que vai além do "o servidor ligou" — serviços dependentes como sincronização de horário precisam de checagem explícita, já que uma falha ali pode não ser percebida imediatamente mas afeta autenticação.
+- Migrações de sistema operacional em Domain Controllers exigem validação que vai além do "o servidor ligou", os serviços dependentes como sincronização de horário precisam de checagem explícita, já que uma falha ali pode não ser percebida imediatamente mas afeta autenticação.
 - Ter um checklist padrão pós-migração (DHCP, DNS, conta de domínio, ativação, serviço de horário) ajuda a capturar problemas antes que se tornem incidentes reportados por usuários.
 
 ---

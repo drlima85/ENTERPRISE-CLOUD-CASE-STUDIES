@@ -33,7 +33,7 @@ A configuração de Bridgehead preferencial foi ajustada no Active Directory Sit
 
 ## Desafios enfrentados
 
-- **Sintoma silencioso**: a falha não gerava um erro óbvio no dia a dia — o ambiente local continuava funcional, o que atrasa a percepção do problema até haver divergência perceptível de diretório entre sites.
+- **Sintoma silencioso**: a falha não gerava um erro óbvio no dia a dia, pois o ambiente local continuava funcional, o que atrasa a percepção do problema até haver divergência perceptível de diretório entre sites.
 - **Efeito colateral de uma migração anterior**: a causa raiz não estava relacionada à configuração dos novos DCs em si, mas a uma configuração legada (bridgehead) que dependia dos servidores antigos e não foi migrada junto durante o processo de descomissionamento, reforçando a importância de mapear dependências de configuração, não só os objetos de servidor, antes de desligar uma infraestrutura antiga.
 - **Coordenação entre membros da equipe**: o descomissionamento dos servidores antigos e o ajuste da nova configuração foram conduzidos por pessoas diferentes da equipe, exigindo alinhamento para garantir que o ajuste de bridgehead fosse atribuído e concluído.
 

@@ -37,7 +37,7 @@ jobs:
             --query "{name:name, location:location, provisioningState:properties.provisioningState}" \
             -o table
 
-                  - name: Test Terraform State access
+      - name: Test Terraform State access
         run: |
           az storage blob list \
             --account-name "stmonhubtfstatedevbrs" \

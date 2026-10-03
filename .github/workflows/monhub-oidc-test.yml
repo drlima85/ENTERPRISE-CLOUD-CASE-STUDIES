@@ -36,3 +36,11 @@ jobs:
             --name "rg-monhub-dev-brs" \
             --query "{name:name, location:location, provisioningState:properties.provisioningState}" \
             -o table
+
+                  - name: Test Terraform State access
+        run: |
+          az storage blob list \
+            --account-name "stmonhubtfstatedevbrs" \
+            --container-name "tfstate" \
+            --auth-mode login \
+            --output table

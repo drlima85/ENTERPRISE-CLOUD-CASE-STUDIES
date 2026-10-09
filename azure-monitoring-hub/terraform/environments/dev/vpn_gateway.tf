@@ -28,7 +28,7 @@ resource "azurerm_virtual_network_gateway" "monhub" {
   vpn_type = "RouteBased"
 
   active_active = false
-  enable_bgp    = var.vng_enable_bgp
+  bgp_enabled   = var.vng_enable_bgp
   sku           = var.vng_sku
   generation    = var.vng_generation
 

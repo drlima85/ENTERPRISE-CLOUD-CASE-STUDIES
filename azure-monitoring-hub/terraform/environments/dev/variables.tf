@@ -27,3 +27,25 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+# ------------------------------------------------------------------------------
+# Variáveis — Virtual Network Gateway (US-05 / ADR-001)
+# ------------------------------------------------------------------------------
+
+variable "vng_sku" {
+  description = "SKU do Azure Virtual Network Gateway. Conforme ADR-001, o valor padrão é VpnGw1AZ (Zone-Redundant)."
+  type        = string
+  default     = "VpnGw1AZ"
+}
+
+variable "vng_generation" {
+  description = "Geração de arquitetura do Azure Virtual Network Gateway."
+  type        = string
+  default     = "Generation1"
+}
+
+variable "vng_enable_bgp" {
+  description = "Indica se o suporte a Border Gateway Protocol (BGP) deve ser habilitado no gateway."
+  type        = bool
+  default     = false
+}

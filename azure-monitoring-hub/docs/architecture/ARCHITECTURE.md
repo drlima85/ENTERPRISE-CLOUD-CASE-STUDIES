@@ -117,10 +117,11 @@ flowchart TD
 ### 5.1 Regras de Associação dos Componentes
 
 1. **Virtual Network Gateway (`vng-monhub-dev-brs`)**:
-   - Provisionado exclusivamente dentro de `GatewaySubnet`.
-   - Vinculado a um endereço IP público dedicado (`pip-vng-monhub-dev-brs`).
-   - Não possui associação direta com NSG (em conformidade com as melhores práticas da Microsoft, que desaconselham NSG em `GatewaySubnet` para evitar interrupção de planos de controle do gateway).
-   - Termina conexões VPN Site-to-Site IKEv2 dedicadas (`con-cust<ID>-dev-brs`) com cada cliente.
+   - Provisionado exclusivamente dentro de `GatewaySubnet` (`10.240.0.0/26`).
+   - SKU oficial aprovado: **`VpnGw1AZ`** (Generation 1, Route-Based, Zone-Redundant em Brazil South, suporte para até 30 túneis S2S e 650 Mbps de throughput), conforme [ADR-001](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/adr/ADR-001-vng-sku.md).
+   - Vinculado a um endereço IP público dedicado (`pip-vng-monhub-dev-brs`) de SKU **`Standard`**, alocação estática e redundância zonal (*Zone-Redundant*).
+   - Não possui associação direta com NSG (em estrita conformidade com as recomendações da Microsoft para evitar interrupção de planos de controle e tráfego de gerenciamento do gateway).
+   - Termina conexões VPN Site-to-Site IKEv2 dedicadas (`con-cust<ID>-dev-brs`) com cada cliente, garantindo isolamento sem trânsito entre clientes (*No Inter-Customer Transit*).
 
 2. **Network Security Group (`nsg-collectors-dev-brs`)**:
    - Associado à subnet `snet-collectors-dev-brs`.
@@ -154,4 +155,4 @@ Para preservar a governança do projeto, respeitar a separação de papéis e ev
 | **Dimensionamento de SKU do VNG (US-05)** | Cloud Architect | **Concluído (V1)** | VpnGw1AZ / Generation1 — decisão arquitetural V1 documentada no [ADR-001](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/adr/ADR-001-vng-sku.md). |
 | **Políticas Criptográficas IPsec/IKE (US-05 / US-07)** | Security Engineer | **Pendente** | Especificar parâmetros de criptografia Phase 1 / Phase 2 (IKE encryption, integrity, DH Group, PFS) e gestão de PSK. |
 | **Algoritmo de Overlap Detection (US-06)** | Cloud DevOps / QA | **Pendente** | Implementar script automatizado pré-plan para validação matemática de sobreposição de CIDR. |
-| **Especificação da VM dos Collectors (US-09)** | Cloud Architect | **Concluído (V1)** | Baseline oficial (WS 2022 Gen2, `Standard_B2s`, StandardSSD 127 GiB) documentada no [ADR-002](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/adr/ADR-002-collector-vm.md). |
+| **Especificação da VM dos Collectors (US-09)** | Cloud Architect | **Concluído (V1)** | Baseline oficial (WS 2022 Gen2, `Standard_B2ls_v2`, StandardSSD 127 GiB) documentada no [ADR-002](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/adr/ADR-002-collector-vm.md). |

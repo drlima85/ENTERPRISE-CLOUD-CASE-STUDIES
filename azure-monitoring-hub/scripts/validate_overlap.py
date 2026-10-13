@@ -297,19 +297,19 @@ def validate_customer_dataset(
                             )
                     else:
                         # Validação estrita de IPv4 Público Global
-                        if gw_ip.is_private:
+                        if gw_ip.is_loopback:
+                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é endereço de loopback.")
+                        elif gw_ip.is_link_local:
+                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é endereço link-local (APIPA).")
+                        elif gw_ip.is_multicast:
+                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é endereço multicast.")
+                        elif gw_ip.is_reserved or gw_ip.is_unspecified:
+                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é um endereço reservado ou não especificado.")
+                        elif gw_ip.is_private:
                             report.add_error(
                                 f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é um endereço privado RFC 1918. "
                                 f"Gateways remotos Site-to-Site exigem endereço IPv4 público."
                             )
-                        elif gw_ip.is_loopback:
-                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é endereço de loopback.")
-                        elif gw_ip.is_multicast:
-                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é endereço multicast.")
-                        elif gw_ip.is_link_local:
-                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é endereço link-local (APIPA).")
-                        elif gw_ip.is_reserved or gw_ip.is_unspecified:
-                            report.add_error(f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' é um endereço reservado ou não especificado.")
                         elif not gw_ip.is_global:
                             report.add_error(
                                 f"Cliente '{customer_id}': O gateway_ip '{gw_ip}' não é um endereço IPv4 globalmente roteável."
@@ -371,10 +371,10 @@ def validate_customer_dataset(
             if cust_a != cust_b and net_a.overlaps(net_b):
                 if net_a == net_b:
                     overlap_type = "overlap exato"
-                elif net_a.subnet_of(net_b):
-                    overlap_type = f"sub-rede contida em '{net_b}' de '{cust_b}'"
                 elif net_b.subnet_of(net_a):
-                    overlap_type = f"super-rede contendo '{net_b}' de '{cust_b}'"
+                    overlap_type = f"sub-rede contida em '{net_a}' de '{cust_a}'"
+                elif net_a.subnet_of(net_b):
+                    overlap_type = f"super-rede contendo '{net_a}' de '{cust_a}'"
                 else:
                     overlap_type = "interseção parcial de blocos"
 

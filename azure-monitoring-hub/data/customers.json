@@ -1,0 +1,34 @@
+{
+  "customers": {
+    "cust01": {
+      "customer_id": "cust01",
+      "display_name": "Cliente Alpha",
+      "collector_ip": "10.240.1.10",
+      "gateway_ip": "198.51.100.10",
+      "remote_address_spaces": [
+        "192.168.10.0/24",
+        "192.168.11.0/24"
+      ]
+    },
+    "cust02": {
+      "customer_id": "cust02",
+      "display_name": "Cliente Beta",
+      "collector_ip": "10.240.1.11",
+      "gateway_ip": "198.51.100.20",
+      "remote_address_spaces": [
+        "192.168.20.0/24",
+        "192.168.21.0/24"
+      ]
+    },
+    "cust03": {
+      "customer_id": "cust03",
+      "display_name": "Cliente Gamma",
+      "collector_ip": "10.240.1.12",
+      "gateway_ip": "198.51.100.30",
+      "remote_address_spaces": [
+        "172.16.30.0/24",
+        "172.16.31.0/24"
+      ]
+    }
+  }
+}

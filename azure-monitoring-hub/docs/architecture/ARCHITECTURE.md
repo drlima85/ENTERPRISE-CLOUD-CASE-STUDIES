@@ -67,6 +67,7 @@ A plataforma conecta múltiplos clientes remotos via VPN Site-to-Site terminadas
 ### 4.2 Mecanismo Preventivo (Pré-Requisito para US-06)
 - O onboarding de um cliente exigirá a declaração de suas faixas remotas em arquivo de parâmetros parametrizado.
 - Um script de validação de overlap (conforme [US-06](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/backlog/BACKLOG.md#us-06-validação-automatizada-de-sobreposição-de-blocos-cidr-overlap-detection)) deverá ser executado antes de qualquer comando de planejamento do Terraform (`terraform plan`), validando interseções matemáticas de CIDR entre o novo cliente, a VNet do hub e todos os LNGs já cadastrados.
+- As regras matemáticas de validação e o plano de endereçamento dos clientes fictícios (`cust01`, `cust02`, `cust03`) estão formalizados em [addressing-plan.md](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/addressing-plan.md).
 - Qualquer sobreposição identificada bloqueará imediatamente a execução da pipeline de integração contínua.
 
 ---
@@ -121,7 +122,7 @@ flowchart TD
    - SKU oficial aprovado: **`VpnGw1AZ`** (Generation 1, Route-Based, Zone-Redundant em Brazil South, suporte para até 30 túneis S2S e 650 Mbps de throughput), conforme [ADR-001](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/adr/ADR-001-vng-sku.md).
    - Vinculado a um endereço IP público dedicado (`pip-vng-monhub-dev-brs`) de SKU **`Standard`**, alocação estática e redundância zonal (*Zone-Redundant*).
    - Não possui associação direta com NSG (em estrita conformidade com as recomendações da Microsoft para evitar interrupção de planos de controle e tráfego de gerenciamento do gateway).
-   - Termina conexões VPN Site-to-Site IKEv2 dedicadas (`con-cust<ID>-dev-brs`) com cada cliente, garantindo isolamento sem trânsito entre clientes (*No Inter-Customer Transit*).
+   - Termina conexões VPN Site-to-Site IKEv2 dedicadas (`con-cust<ID>-dev-brs`) com cada cliente; o isolamento inter-cliente é assegurado de forma verificável pela desativação de trânsito BGP e pelas regras de ASG/NSG com política de *Default Deny*, conforme detalhado em [addressing-plan.md](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/addressing-plan.md).
 
 2. **Network Security Group (`nsg-collectors-dev-brs`)**:
    - Associado à subnet `snet-collectors-dev-brs`.
@@ -154,5 +155,5 @@ Para preservar a governança do projeto, respeitar a separação de papéis e ev
 | **Matriz de Regras e Portas do NSG (US-04 / US-08)** | Security Engineer | **Pendente** | Especificar as portas estritas de entrada/saída (ex.: WMI, WinRM, SNMP, ICMP) e a regra de bloqueio lateral entre coletores. |
 | **Dimensionamento de SKU do VNG (US-05)** | Cloud Architect | **Concluído (V1)** | VpnGw1AZ / Generation1 — decisão arquitetural V1 documentada no [ADR-001](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/adr/ADR-001-vng-sku.md). |
 | **Políticas Criptográficas IPsec/IKE (US-05 / US-07)** | Security Engineer | **Pendente** | Especificar parâmetros de criptografia Phase 1 / Phase 2 (IKE encryption, integrity, DH Group, PFS) e gestão de PSK. |
-| **Algoritmo de Overlap Detection (US-06)** | Cloud DevOps / QA | **Pendente** | Implementar script automatizado pré-plan para validação matemática de sobreposição de CIDR. |
+| **Algoritmo de Overlap Detection (US-06)** | Cloud DevOps / QA | **Concluído (US-06)** | Validador determinístico Python implementado em [validate_overlap.py](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/scripts/validate_overlap.py), testes em [test_validate_overlap.py](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/tests/test_validate_overlap.py) e pipeline configurado. |
 | **Especificação da VM dos Collectors (US-09)** | Cloud Architect | **Concluído (V1)** | Baseline oficial (WS 2022 Gen2, `Standard_B2ls_v2`, StandardSSD 127 GiB) documentada no [ADR-002](file:///C:/Users/drlim/ENTERPRISE-CLOUD-CASE-STUDIES/azure-monitoring-hub/docs/architecture/adr/ADR-002-collector-vm.md). |

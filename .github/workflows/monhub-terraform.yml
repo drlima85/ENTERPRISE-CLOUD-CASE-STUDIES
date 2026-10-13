@@ -1,5 +1,10 @@
 name: "MonHub - Terraform Dev"
 
+# ==============================================================================
+# Pipeline Oficial de Infraestrutura — Azure Monitoring Hub (monhub)
+# Rastreabilidade: US-03 (Pipeline & Gate Humano) e US-06 (Overlap Detection)
+# ==============================================================================
+
 on:
   workflow_dispatch:
     inputs:
@@ -8,6 +13,11 @@ on:
         type: boolean
         required: true
         default: false
+      environment:
+        description: "Ambiente alvo (obrigatório; 'monhub-dev' para sandbox)"
+        type: string
+        required: true
+        default: "monhub-dev"
 
 permissions:
   id-token: write
@@ -29,9 +39,92 @@ defaults:
     working-directory: azure-monitoring-hub/terraform/environments/dev
 
 jobs:
+  # ============================================================================
+  # Job 1: Governança de Rede e Validação de Sobreposição de CIDRs (US-06)
+  # Este job é PRÉ-REQUISITO OBRIGATÓRIO para qualquer execução de Plan ou Apply.
+  # ============================================================================
+  validate:
+    name: "Validação de CIDR & Governança (US-06)"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: azure-monitoring-hub
+    outputs:
+      customers_sha256: ${{ steps.calc-hash.outputs.customers_sha256 }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configurar Ambiente Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Executar Testes Unitários de QA (US-06)
+        run: |
+          echo "================================================================="
+          echo "Executando Bateria de Testes Unitários de QA (unittest)..."
+          echo "================================================================="
+          python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Validar Configuração de Ambiente e Executar Overlap Detection (US-06)
+        run: |
+          echo "================================================================="
+          echo "Executando Validador de Sobreposição de Redes dos Clientes..."
+          echo "================================================================="
+
+          # Validação estrita de presença e consistência do ambiente
+          TARGET_ENV="${{ inputs.environment }}"
+          if [ -z "$TARGET_ENV" ]; then
+            echo "::error::Configuração de ambiente ausente. A execução exige definição explícita do ambiente."
+            exit 1
+          fi
+
+          if [ "$TARGET_ENV" != "monhub-dev" ] && [ "$TARGET_ENV" != "monhub-prod" ] && [ "$TARGET_ENV" != "production" ]; then
+            echo "::error::Ambiente '$TARGET_ENV' é inválido ou inconsistente. Validação abortada por governança."
+            exit 1
+          fi
+
+          # Controle estrito de Sandbox: --allow-testnet autorizado EXCLUSIVAMENTE em 'monhub-dev'
+          # Em qualquer outro ambiente funcional/produção, exige validação estrita
+          if [ "$TARGET_ENV" = "monhub-dev" ]; then
+            echo "::notice ::Ambiente protegido 'monhub-dev' autorizado: executando com --allow-testnet (Sandbox/Mock)."
+            python scripts/validate_overlap.py \
+              --file data/customers.json \
+              --environment "monhub-dev" \
+              --allow-testnet
+          else
+            echo "::notice ::Ambiente '$TARGET_ENV': exigindo modo ESTRITO de produção. RFC 5737 estritamente bloqueado."
+            export CI_STRICT_PROD="true"
+            python scripts/validate_overlap.py \
+              --file data/customers.json \
+              --environment "$TARGET_ENV"
+          fi
+
+      - name: Calcular Checksum de Integridade dos Dados Canônicos
+        id: calc-hash
+        run: |
+          CUSTOMERS_HASH=$(sha256sum data/customers.json | awk '{print $1}')
+          echo "Checksum SHA256 de data/customers.json: $CUSTOMERS_HASH"
+          echo "customers_sha256=$CUSTOMERS_HASH" >> $GITHUB_OUTPUT
+          echo "$CUSTOMERS_HASH" > customers.sha256
+
+      - name: Upload do Artefato de Integridade de Dados
+        uses: actions/upload-artifact@v4
+        with:
+          name: customers-integrity
+          path: azure-monitoring-hub/customers.sha256
+          retention-days: 1
+
+  # ============================================================================
+  # Job 2: Terraform Plan
+  # Depende OBRIGATORIAMENTE da validação de CIDR bem-sucedida.
+  # ============================================================================
   plan:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
+    needs: [validate]
     if: github.ref == 'refs/heads/main'
     environment: monhub-dev
 
@@ -71,16 +164,45 @@ jobs:
           path: azure-monitoring-hub/terraform/environments/dev/tfplan
           retention-days: 1
 
+  # ============================================================================
+  # Job 3: Terraform Apply (Aprovação Humana Obrigatória via Environment)
+  # Depende do Plan e da Validação de Integridade do mesmo conjunto de dados.
+  # ============================================================================
   apply:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
-    needs: [plan]
+    needs: [plan, validate]
     if: github.ref == 'refs/heads/main' && inputs.apply == true
     environment: monhub-dev
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Download do Artefato de Integridade de Dados
+        uses: actions/download-artifact@v4
+        with:
+          name: customers-integrity
+          path: azure-monitoring-hub
+
+      - name: Validar Integridade e Imutabilidade dos Dados Pré-Apply
+        working-directory: azure-monitoring-hub
+        run: |
+          CURRENT_HASH=$(sha256sum data/customers.json | awk '{print $1}')
+          EXPECTED_HASH="${{ needs.validate.outputs.customers_sha256 }}"
+
+          echo "================================================================="
+          echo "Verificando imutabilidade dos dados validados..."
+          echo "Hash validado no Job 1 : $EXPECTED_HASH"
+          echo "Hash atual no Apply    : $CURRENT_HASH"
+          echo "================================================================="
+
+          if [ "$CURRENT_HASH" != "$EXPECTED_HASH" ]; then
+            echo "::error::VIOLAÇÃO DE INTEGRIDADE: data/customers.json foi alterado entre o Plan e o Apply!"
+            echo "O Apply foi bloqueado por segurança para impedir aplicação de dados não validados."
+            exit 1
+          fi
+          echo "Integridade confirmada: o conjunto de dados validado é idêntico ao do Apply."
 
       - name: Azure Login via OIDC
         uses: azure/login@v2

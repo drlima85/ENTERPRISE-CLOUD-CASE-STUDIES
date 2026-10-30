@@ -1,1 +1,4 @@
 tfplan
+
+# Artefato gerado pelo compilador Bicep
+/azure-monitoring-hub/bootstrap/bicep/main.json
